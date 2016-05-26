@@ -1,0 +1,68 @@
+<template>
+  <div class="main-header">
+    <span align="left">BooguNote 5 <span style="font-size:xx-small">alpha</span></span>
+    <div align="right">
+      <button class="btn btn-default" click.delegate="toggleFileManager()">Notes Manager</button>
+      <button class="btn btn-default" click.delegate="toggleTimeline()">Timeline</button>
+    </div>
+  </div>
+  <div style="clear:left; display: -webkit-flex; display: flex;">
+    <div show.bind="showFileManager" class="main-left">
+      <compose
+        model.bind="{'user_id':user_id, 'frameVM': frameVM}"
+        view-model="./file_manager/tree">
+      </compose>
+    </div>
+    <div class="main-right">
+      <div show.bind="showTimeline">
+        <compose
+          view-model="./timeline/timeline">
+        </compose>
+      </div>
+      
+      <ul class="nav nav-tabs">
+        <!-- <li class="${tab.id} ${$parent.active_id}" repeat.for="tab of info.mainwindow.tabs"> -->
+        <li class="${tab.id == $parent.active_id?'active':''} main-tab-header" style="position: relative;" repeat.for="tab of info.mainwindow.tabs">
+          <a style="display:block; float:left; cursor: pointer;" file_id.bind="tab.id" click.delegate="$parent.onSwitchTab($event)">${tab.name}</a>
+          <div class="main-tab-header-close" file_id.bind="tab.id" click.delegate="$parent.close($event)">x</div>
+        </li>
+      </ul>
+      <div class="main-content">
+        <div id.bind="'page-'+tab.id" repeat.for="tab of localTabList">
+          <div show.bind="tab.id == $parent.active_id">
+            <compose
+              if.bind="tab.type=='tree'"
+              model.bind="{'type':'online', 'user_id':$parent.user_id, 'file_id':tab.id, 'root_id':'root'}"
+              view-model="./tree">
+            </compose>
+            <compose
+              if.bind="tab.type=='flat'"
+              model.bind="{'type':'online', 'user_id':$parent.user_id, 'file_id':tab.id, 'root_id':'root'}"
+              view-model="./flat">
+            </compose>
+            <compose
+              if.bind="tab.type=='mosaic'"
+              model.bind="{'type':'online', 'user_id':$parent.user_id, 'file_id':tab.id, 'root_id':'root'}"
+              view-model="./mosaic/mosaic">
+            </compose>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!-- Modal HTML -->
+  <div id="myModal" class="modal fade">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Message</h4>
+            </div>
+            <div class="modal-body">
+                <p>${message}</p>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+  </div>
+</template>
