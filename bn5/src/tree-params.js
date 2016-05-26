@@ -1,4 +1,0 @@
-export class TreeParams {
-  constructor() {
-  }
-}
